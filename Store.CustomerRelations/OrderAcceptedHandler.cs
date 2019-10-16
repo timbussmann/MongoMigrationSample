@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.Logging;
@@ -12,11 +11,6 @@ class OrderAcceptedHandler :
 
     public Task Handle(OrderAccepted message, IMessageHandlerContext context)
     {
-        if (DebugFlagMutator.Debug)
-        {
-            Debugger.Break();
-        }
-
         log.Info($"Customer: {message.ClientId} is now a preferred customer publishing for other service concerns");
 
         // publish this event as an asynchronous event

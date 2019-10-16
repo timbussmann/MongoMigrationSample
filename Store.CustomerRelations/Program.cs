@@ -3,7 +3,6 @@ using System.Text;
 using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.Encryption.MessageProperty;
-using NServiceBus.MessageMutator;
 
 class Program
 {
@@ -20,7 +19,6 @@ class Program
             encryptionKeyIdentifier: defaultKey,
             key: ascii.GetBytes("gdDbqRpqdRbTs3mhdZh9qCaDaxJXl+e6"));
         endpointConfiguration.EnableMessagePropertyEncryption(encryptionService);
-        endpointConfiguration.RegisterMessageMutator(new DebugFlagMutator());
         var endpointInstance = await Endpoint.Start(endpointConfiguration)
             .ConfigureAwait(false);
         Console.WriteLine("Press any key to exit");

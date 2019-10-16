@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.Logging;
@@ -22,11 +21,6 @@ public class ProvisionDownloadResponseHandler :
 
     public Task Handle(ProvisionDownloadResponse message, IMessageHandlerContext context)
     {
-        if (DebugFlagMutator.Debug)
-        {
-            Debugger.Break();
-        }
-
         log.Info($"Download for Order # {message.OrderNumber} has been provisioned, Publishing Download ready event");
 
         log.Info($"Downloads for Order #{message.OrderNumber} is ready, publishing it.");

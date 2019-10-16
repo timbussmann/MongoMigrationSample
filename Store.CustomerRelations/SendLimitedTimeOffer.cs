@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.Logging;
 using Store.Messages.Events;
@@ -11,10 +10,6 @@ class SendLimitedTimeOffer :
 
     public Task Handle(ClientBecamePreferred message, IMessageHandlerContext context)
     {
-        if (DebugFlagMutator.Debug)
-        {
-            Debugger.Break();
-        }
         log.Info($"Handler WhenCustomerIsPreferredSendLimitedTimeOffer invoked for CustomerId: {message.ClientId}");
         return Task.CompletedTask;
     }

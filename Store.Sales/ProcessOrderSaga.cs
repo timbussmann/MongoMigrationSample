@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.Logging;
@@ -16,11 +15,6 @@ public class ProcessOrderSaga :
 
     public Task Handle(SubmitOrder message, IMessageHandlerContext context)
     {
-        if (DebugFlagMutator.Debug)
-        {
-            Debugger.Break();
-        }
-
         Data.OrderNumber = message.OrderNumber;
         Data.ProductIds = message.ProductIds;
         Data.ClientId = message.ClientId;
@@ -31,11 +25,6 @@ public class ProcessOrderSaga :
 
     public Task Timeout(BuyersRemorseIsOver state, IMessageHandlerContext context)
     {
-        if (DebugFlagMutator.Debug)
-        {
-            Debugger.Break();
-        }
-
         log.Info($"Cooling down period for order #{Data.OrderNumber} has elapsed.");
 
         var orderAccepted = new OrderAccepted
@@ -51,11 +40,6 @@ public class ProcessOrderSaga :
 
     public Task Handle(CancelOrder message, IMessageHandlerContext context)
     {
-        if (DebugFlagMutator.Debug)
-        {
-            Debugger.Break();
-        }
-
         MarkAsComplete();
 
         log.Info($"Order #{message.OrderNumber} was cancelled.");

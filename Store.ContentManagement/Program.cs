@@ -3,7 +3,6 @@ using System.Text;
 using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.Encryption.MessageProperty;
-using NServiceBus.MessageMutator;
 using Store.Messages.RequestResponse;
 
 class Program
@@ -25,7 +24,6 @@ class Program
             encryptionKeyIdentifier: defaultKey,
             key: ascii.GetBytes("gdDbqRpqdRbTs3mhdZh9qCaDaxJXl+e6"));
         endpointConfiguration.EnableMessagePropertyEncryption(encryptionService);
-        endpointConfiguration.RegisterMessageMutator(new DebugFlagMutator());
 
         var endpointInstance = await Endpoint.Start(endpointConfiguration)
             .ConfigureAwait(false);

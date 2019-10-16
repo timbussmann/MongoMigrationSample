@@ -1,4 +1,3 @@
-using System;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -6,7 +5,6 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using NServiceBus;
 using NServiceBus.Encryption.MessageProperty;
-using NServiceBus.MessageMutator;
 using Store.Messages.Commands;
 
 public class MvcApplication :
@@ -40,7 +38,6 @@ public class MvcApplication :
             encryptionKeyIdentifier: defaultKey,
             key: ascii.GetBytes("gdDbqRpqdRbTs3mhdZh9qCaDaxJXl+e6"));
         endpointConfiguration.EnableMessagePropertyEncryption(encryptionService);
-        endpointConfiguration.RegisterMessageMutator(new DebugFlagMutator());
 
         EndpointInstance = await Endpoint.Start(endpointConfiguration)
             .ConfigureAwait(false);

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.Logging;
 using Store.Messages.Commands;
@@ -12,11 +11,6 @@ public class SubmitOrderHandler :
 
     public Task Handle(SubmitOrder message, IMessageHandlerContext context)
     {
-        if (DebugFlagMutator.Debug)
-        {
-            Debugger.Break();
-        }
-
         log.Info($"Received an order #{message.OrderNumber} for [{string.Join(", ", message.ProductIds)}] products(s).");
 
         log.Info("The credit card values will be encrypted when looking at the messages in the queues");
