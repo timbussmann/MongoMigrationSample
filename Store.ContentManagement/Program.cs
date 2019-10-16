@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.Encryption.MessageProperty;
+using NServiceBus.Persistence.MongoDB;
 using Store.Messages.RequestResponse;
 
 class Program
@@ -12,11 +13,13 @@ class Program
         Console.Title = "Samples.Store.ContentManagement";
         var endpointConfiguration = new EndpointConfiguration("Store.ContentManagement");
 
-        var transport = endpointConfiguration.UseTransport<LearningTransport>();
+        var transport = endpointConfiguration.UseTransport<RabbitMQTransport>()
+            .ConnectionString("host=localhost");
         var routing = transport.Routing();
         routing.RouteToEndpoint(typeof(ProvisionDownloadRequest), "Store.Operations");
 
-        endpointConfiguration.UsePersistence<LearningPersistence>();
+        endpointConfiguration.UsePersistence<MongoDbPersistence>()
+            .SetConnectionString("mongodb://localhost/samples-store-content-management");
 
         var defaultKey = "2015-10";
         var ascii = Encoding.ASCII;

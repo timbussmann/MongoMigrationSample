@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.Encryption.MessageProperty;
+using NServiceBus.Persistence.MongoDB;
 
 class Program
 {
@@ -10,9 +11,12 @@ class Program
     {
         Console.Title = "Samples.Store.Operations";
         var endpointConfiguration = new EndpointConfiguration("Store.Operations");
-        var transport = endpointConfiguration.UseTransport<LearningTransport>();
+        endpointConfiguration.UseTransport<RabbitMQTransport>()
+            .ConnectionString("host=localhost");
 
-        endpointConfiguration.UsePersistence<LearningPersistence>();
+        endpointConfiguration.UsePersistence<MongoDbPersistence>()
+            .SetConnectionString("mongodb://localhost/samples-store-operations");
+
         var defaultKey = "2015-10";
         var ascii = Encoding.ASCII;
         var encryptionService = new RijndaelEncryptionService(

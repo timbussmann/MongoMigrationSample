@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using NServiceBus;
 using NServiceBus.Encryption.MessageProperty;
+using NServiceBus.Persistence.MongoDB;
 using Store.Messages.Commands;
 
 public class MvcApplication :
@@ -27,11 +28,14 @@ public class MvcApplication :
         var endpointConfiguration = new EndpointConfiguration("Store.ECommerce");
         endpointConfiguration.PurgeOnStartup(true);
 
-        var transport = endpointConfiguration.UseTransport<LearningTransport>();
+        var transport = endpointConfiguration.UseTransport<RabbitMQTransport>();
+        transport.ConnectionString("host=localhost");
         var routing = transport.Routing();
         routing.RouteToEndpoint(typeof(SubmitOrder).Assembly, "Store.Messages.Commands", "Store.Sales");
 
-        endpointConfiguration.UsePersistence<LearningPersistence>();
+        endpointConfiguration.UsePersistence<MongoDbPersistence>()
+            .SetConnectionString("mongodb://localhost/samples-store-sales");
+
         var defaultKey = "2015-10";
         var ascii = Encoding.ASCII;
         var encryptionService = new RijndaelEncryptionService(
