@@ -1,8 +1,12 @@
+using System;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using NServiceBus;
+using NServiceBus.Encryption.MessageProperty;
+using NServiceBus.MessageMutator;
 using Store.Messages.Commands;
 
 public class MvcApplication :
@@ -24,11 +28,19 @@ public class MvcApplication :
     {
         var endpointConfiguration = new EndpointConfiguration("Store.ECommerce");
         endpointConfiguration.PurgeOnStartup(true);
-        endpointConfiguration.ApplyCommonConfiguration(transport =>
-        {
-            var routing = transport.Routing();
-            routing.RouteToEndpoint(typeof(SubmitOrder).Assembly, "Store.Messages.Commands", "Store.Sales");
-        });
+
+        var transport = endpointConfiguration.UseTransport<LearningTransport>();
+        var routing = transport.Routing();
+        routing.RouteToEndpoint(typeof(SubmitOrder).Assembly, "Store.Messages.Commands", "Store.Sales");
+
+        endpointConfiguration.UsePersistence<LearningPersistence>();
+        var defaultKey = "2015-10";
+        var ascii = Encoding.ASCII;
+        var encryptionService = new RijndaelEncryptionService(
+            encryptionKeyIdentifier: defaultKey,
+            key: ascii.GetBytes("gdDbqRpqdRbTs3mhdZh9qCaDaxJXl+e6"));
+        endpointConfiguration.EnableMessagePropertyEncryption(encryptionService);
+        endpointConfiguration.RegisterMessageMutator(new DebugFlagMutator());
 
         EndpointInstance = await Endpoint.Start(endpointConfiguration)
             .ConfigureAwait(false);
